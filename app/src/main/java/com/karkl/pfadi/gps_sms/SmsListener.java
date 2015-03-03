@@ -1,4 +1,4 @@
-package com.playground.karr.sms_location;
+package com.karkl.pfadi.gps_sms;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -11,9 +11,12 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
+import com.karkl.pfadi.gps_sms.userresponse.ForwardSmsIntent;
+import com.karkl.pfadi.gps_sms.userresponse.OpenMapsIntent;
+import com.playground.karr.sms_location.R;
+
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Date;
 
@@ -46,7 +49,7 @@ public class SmsListener extends BroadcastReceiver {
                         String pattern_Coordinates = "^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$";
                         if (msgBody.matches(pattern_Coordinates)) {
                             handleCoordinateSms(context, msgBody);
-                            saveInHistory(context);
+                            saveInHistory(context, msgBody);
                         }
                     }
                 } catch (Exception e) {
@@ -56,33 +59,18 @@ public class SmsListener extends BroadcastReceiver {
         }
     }
 
-    private void saveInHistory(Context context) {
+    private void saveInHistory(Context context, String coordinates) {
         SharedPreferences prefs = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
-        String value = prefs.getString("history", null);
+        String historyJsonString = prefs.getString("history", null);
         try {
-            JSONArray jsonArray = new JSONArray(value);
-            for(int i=0; i<jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                Log.d("sms_location", "it works: " + jsonObject.getString("time") + ", " + jsonObject.getString("data"));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            String value = new JSONArray("[" +
-                    "{" +
-                    "'time': '" + new Date().getTime() +"', " +
-                    "'data': 'coordinate 1' " +
-                    "}," +
-                    "{" +
-                    "'time': '" + (new Date().getTime() - 100) +"', " +
-                    "'data': 'coordinate 2' " +
-                    "}" +
-                    "]").toString();
-            SharedPreferences prefs = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
+            JSONArray jsonArray = new JSONArray(historyJsonString);
+            String historyEntry = new JSONArray("{" +
+                    "'time': '" + new Date().getTime() + "', " +
+                    "'data': '" + coordinates + "' " +
+                    "}").toString();
+            jsonArray.put(historyEntry);
             SharedPreferences.Editor e = prefs.edit();
-            e.putString("history", value);
+            e.putString("history", jsonArray.toString());
             e.commit();
         } catch (JSONException e) {
             e.printStackTrace();

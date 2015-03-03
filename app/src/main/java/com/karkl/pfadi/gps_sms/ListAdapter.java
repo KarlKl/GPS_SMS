@@ -1,4 +1,4 @@
-package com.playground.karr.sms_location;
+package com.karkl.pfadi.gps_sms;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.playground.karr.sms_location.R;
+
 import java.util.List;
 
 /**
@@ -14,14 +16,14 @@ import java.util.List;
  *
  * @author itcuties
  */
-public class ListAdapter extends ArrayAdapter<SMSData> {
+public class ListAdapter extends ArrayAdapter<HistoryItem> {
 
     // List context
     private final Context context;
     // List values
-    private final List<SMSData> smsList;
+    private final List<HistoryItem> smsList;
 
-    public ListAdapter(Context context, List<SMSData> smsList) {
+    public ListAdapter(Context context, List<HistoryItem> smsList) {
         super(context, R.layout.activity_main, smsList);
         this.context = context;
         this.smsList = smsList;
@@ -34,7 +36,7 @@ public class ListAdapter extends ArrayAdapter<SMSData> {
         View rowView = inflater.inflate(R.layout.activity_main, parent, false);
 
         TextView senderNumber = (TextView) rowView.findViewById(R.id.smsNumberText);
-        senderNumber.setText(smsList.get(position).getNumber());
+        senderNumber.setText(smsList.get(position).getValue());
 
         return rowView;
     }

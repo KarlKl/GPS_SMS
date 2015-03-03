@@ -1,4 +1,4 @@
-package com.playground.karr.sms_location;
+package com.karkl.pfadi.gps_sms;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -6,6 +6,9 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Window;
 import android.widget.Toast;
+
+import com.karkl.pfadi.gps_sms.userresponse.ForwardSmsIntent;
+import com.karkl.pfadi.gps_sms.userresponse.OpenMapsIntent;
 
 
 public class SMSPopup extends Activity {

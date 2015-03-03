@@ -1,4 +1,4 @@
-package com.playground.karr.sms_location;
+package com.karkl.pfadi.gps_sms;
 
 import android.annotation.TargetApi;
 import android.app.ListActivity;
@@ -7,20 +7,19 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.JsonReader;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+
+import com.karkl.pfadi.gps_sms.userresponse.ForwardSmsIntent;
+import com.karkl.pfadi.gps_sms.userresponse.OpenMapsIntent;
+import com.playground.karr.sms_location.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,30 +34,46 @@ public class MainActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        System.out.println("heja");
+        List<HistoryItem> smsList = loadHistoryItems();
 
-        List<SMSData> smsList = new ArrayList<SMSData>();
+//                new ArrayList<HistoryItem>();
 
-        Uri uri = Uri.parse("content://sms/inbox");
-        Cursor c = getContentResolver().query(uri, null, null, null, null);
-        startManagingCursor(c);
-
-        // Read the sms data and store it in the list
-        if (c.moveToFirst()) {
-            for (int i = 0; i < c.getCount(); i++) {
-                SMSData sms = new SMSData();
-                sms.setBody(c.getString(c.getColumnIndexOrThrow("body")).toString());
-                sms.setNumber(c.getString(c.getColumnIndexOrThrow("address")).toString());
-                smsList.add(sms);
-
-                c.moveToNext();
-            }
-        }
-        c.close();
+//        Uri uri = Uri.parse("content://sms/inbox");
+//        Cursor c = getContentResolver().query(uri, null, null, null, null);
+//        startManagingCursor(c);
+//
+//        // Read the sms data and store it in the list
+//        if (c.moveToFirst()) {
+//            for (int i = 0; i < c.getCount(); i++) {
+//                SMSData sms = new SMSData();
+//                sms.setBody(c.getString(c.getColumnIndexOrThrow("body")).toString());
+//                sms.setNumber(c.getString(c.getColumnIndexOrThrow("address")).toString());
+//                smsList.add(sms);
+//
+//                c.moveToNext();
+//            }
+//        }
+//        c.close();
 
         // Set smsList in the ListAdapter
         setListAdapter(new ListAdapter(this, smsList));
 
+    }
+
+    private List<HistoryItem> loadHistoryItems() {
+        List<HistoryItem> historyList = new ArrayList<>();
+        SharedPreferences prefs = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        String historyJsonString = prefs.getString("history", null);
+        try {
+            JSONArray jsonArray = new JSONArray(historyJsonString);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                historyList.add(new HistoryItem(jsonObject.getString("value")));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return historyList;
     }
 
     @Override

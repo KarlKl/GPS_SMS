@@ -1,4 +1,4 @@
-package com.playground.karr.sms_location;
+package com.karkl.pfadi.gps_sms.userresponse;
 
 import android.content.Intent;
 import android.net.Uri;
