@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.playground.karr.sms_location">
+
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_gps_sms"
+        android:label="SMS Location"
+        android:theme="@style/AppTheme">
+
+        <!-- <service android:name="MyService"> -->
+        <!-- </service> -->
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <intent-filter>
+            <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+            <category android:name="android.intent.category.HOME" />
+        </intent-filter>
+
+        <receiver android:name=".SmsListener">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".SMSPopup"
+            android:label="@string/title_activity_smspopup"
+            android:theme="@android:style/Theme.Translucent"></activity>
+    </application>
+</manifest>
