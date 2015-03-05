@@ -19,6 +19,7 @@ import com.playground.karr.sms_location.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Date;
 
@@ -71,16 +72,16 @@ public class SmsListener extends BroadcastReceiver {
             } else {
                 jsonArray = new JSONArray(historyJsonString);
             }
-            String historyEntry = new JSONArray("{" +
-                    "'time': '" + new Date().getTime() + "', " +
-                    "'data': '" + coordinates + "' " +
-                    "}").toString();
-            jsonArray.put(historyEntry);
+            JSONObject historyEntryJson = new JSONObject();
+            historyEntryJson.put("time", new Date().getTime());
+            historyEntryJson.put("data", coordinates);
+
+            jsonArray.put(historyEntryJson);
             SharedPreferences.Editor e = prefs.edit();
             e.putString("history", jsonArray.toString());
             e.commit();
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("gps_sms", "Error while writing history", e);
         }
     }
 
