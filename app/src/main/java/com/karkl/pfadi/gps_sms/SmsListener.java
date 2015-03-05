@@ -1,5 +1,6 @@
 package com.karkl.pfadi.gps_sms;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -7,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
@@ -17,6 +19,7 @@ import com.playground.karr.sms_location.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Date;
 
@@ -63,17 +66,22 @@ public class SmsListener extends BroadcastReceiver {
         SharedPreferences prefs = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
         String historyJsonString = prefs.getString("history", null);
         try {
-            JSONArray jsonArray = new JSONArray(historyJsonString);
-            String historyEntry = new JSONArray("{" +
-                    "'time': '" + new Date().getTime() + "', " +
-                    "'data': '" + coordinates + "' " +
-                    "}").toString();
-            jsonArray.put(historyEntry);
+            JSONArray jsonArray;
+            if (historyJsonString == null) {
+                jsonArray = new JSONArray();
+            } else {
+                jsonArray = new JSONArray(historyJsonString);
+            }
+            JSONObject historyEntryJson = new JSONObject();
+            historyEntryJson.put("time", new Date().getTime());
+            historyEntryJson.put("data", coordinates);
+
+            jsonArray.put(historyEntryJson);
             SharedPreferences.Editor e = prefs.edit();
             e.putString("history", jsonArray.toString());
             e.commit();
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("gps_sms", "Error while writing history", e);
         }
     }
 
@@ -85,6 +93,7 @@ public class SmsListener extends BroadcastReceiver {
         notifyMe(context, coordinates);
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void notifyMe(Context context, String coordinates) {
         // prepare intent which is triggered if the
         // notification is selected

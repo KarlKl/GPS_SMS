@@ -6,4 +6,5 @@
 
     <string name="received_gps_sms">Du hast eine neue GPS SMS bekommen!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_history">Verlauf</string>
 </resources>

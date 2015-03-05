@@ -20,4 +20,9 @@ public class HistoryItem {
     public String getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return getValue();
+    }
 }
